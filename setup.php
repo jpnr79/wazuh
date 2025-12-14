@@ -38,10 +38,22 @@ require_once (PLUGIN_WAZUH_DIR . "/src/PluginConfig.php");
 
 //require_once (PLUGIN_WAZUH_DIR . "/vendor/autoload.php");
 
+
 use GlpiPlugin\Wazuh\PluginConfig;
 use GlpiPlugin\Wazuh\Logger;
 use GlpiPlugin\Wazuh\ComputerTab;
-use Glpi\Plugin\Hooks;
+if (class_exists('Glpi\\Plugin\\Hooks')) {
+    use Glpi\Plugin\Hooks;
+} else {
+    if (!defined('UPDATE')) define('UPDATE', 'w');
+    if (!defined('READ')) define('READ', 'r');
+    class Hooks {
+        const CSRF_COMPLIANT = 'csrf_compliant';
+        const CONFIG_PAGE = 'config_page';
+        const ADD_CSS = 'add_css';
+        const ADD_JAVASCRIPT = 'add_javascript';
+    }
+}
 
 define('PLUGIN_WAZUH_VERSION', PluginConfig::loadVersionNumber());
 
