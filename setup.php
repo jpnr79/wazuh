@@ -43,7 +43,7 @@ use GlpiPlugin\Wazuh\PluginConfig;
 use GlpiPlugin\Wazuh\Logger;
 use GlpiPlugin\Wazuh\ComputerTab;
 if (class_exists('Glpi\\Plugin\\Hooks')) {
-    use Glpi\Plugin\Hooks;
+    class_alias('Glpi\\Plugin\\Hooks', 'Hooks');
 } else {
     if (!defined('UPDATE')) define('UPDATE', 'w');
     if (!defined('READ')) define('READ', 'r');
@@ -53,6 +53,18 @@ if (class_exists('Glpi\\Plugin\\Hooks')) {
         const ADD_CSS = 'add_css';
         const ADD_JAVASCRIPT = 'add_javascript';
     }
+}
+/**
+ * Handle plugin database schema and data migrations
+ * REQUIRED for GLPI 11+
+ *
+ * @return array
+ */
+function plugin_version_wazuh_modifications() {
+    return [
+        // Example: [ 'version' => '1.0.0', 'query' => 'CREATE TABLE ...' ]
+        // Add migration steps here as needed for future versions
+    ];
 }
 
 define('PLUGIN_WAZUH_VERSION', PluginConfig::loadVersionNumber());
