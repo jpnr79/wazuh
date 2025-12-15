@@ -439,11 +439,11 @@ class PluginWazuhAgent extends CommonDBTM {
     */
    static function fetchAgentsFromWazuh(Connection $config) {
 
-       $config_name = $config->fields['name'];
-        $wazuh_server = $config->fields['server_url'];
-        $api_port = $config->fields['api_port'];
-        $api_user = $config->fields['api_username'];
-        $api_password = (new \GLPIKey())->decrypt($config->fields['api_password']);
+       $config_name = $config->fields['name'] ?? '';
+        $wazuh_server = $config->fields['server_url'] ?? '';
+        $api_port = $config->fields['api_port'] ?? '';
+        $api_user = $config->fields['api_username'] ?? '';
+        $api_password = (new \GLPIKey())->decrypt($config->fields['api_password'] ?? '');
 
        $ch = curl_init();
        curl_setopt_array($ch, [
@@ -659,7 +659,7 @@ class PluginWazuhAgent extends CommonDBTM {
                     'groups' => isset($agent['group']) ? json_encode($agent['group']) : '',
                     'date_mod' => $currentDate,
                     Entity::getForeignKeyField() => $active_entity,
-                    Connection::getForeignKeyField() => $wazuhConfig->fields['id']
+                    Connection::getForeignKeyField() => $wazuhConfig->fields['id'] ?? ''
                 ];
             } catch (Exception $e) {
                 Logger::addError("Error preparing agent data for ID " . $agent['id'] . ": " . $e->getMessage());
@@ -672,7 +672,7 @@ class PluginWazuhAgent extends CommonDBTM {
                 'FROM' => $table,
                 'WHERE' => [
                     'agent_id' => $agent['id'],
-                    Connection::getForeignKeyField() => $wazuhConfig->fields['id'],
+                    Connection::getForeignKeyField() => $wazuhConfig->fields['id'] ?? '',
                     Entity::getForeignKeyField() => $active_entity,
                 ]
             ])->current();
@@ -763,18 +763,18 @@ class PluginWazuhAgent extends CommonDBTM {
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Name') . "</td>";
         echo "<td>";
-        echo Html::input('name', ['value' => $this->fields['name'], 'class' => 'form-control']);
+        echo Html::input('name', ['value' => $this->fields['name'] ?? '', 'class' => 'form-control']);
         echo "</td>";
         echo "<td>" . __('Agent ID', 'wazuh') . "</td>";
         echo "<td>";
-        echo Html::input('agent_id', ['value' => $this->fields['agent_id'], 'class' => 'form-control', 'readonly' => 'readonly']);
+        echo Html::input('agent_id', ['value' => $this->fields['agent_id'] ?? '', 'class' => 'form-control', 'readonly' => 'readonly']);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('IP Address') . "</td>";
         echo "<td>";
-        echo Html::input('ip', ['value' => $this->fields['ip'], 'class' => 'form-control']);
+        echo Html::input('ip', ['value' => $this->fields['ip'] ?? '', 'class' => 'form-control']);
         echo "</td>";
         echo "<td>" . __('Status', 'wazuh') . "</td>";
         echo "<td>";
@@ -783,29 +783,29 @@ class PluginWazuhAgent extends CommonDBTM {
             'disconnected' => __('Disconnected', 'wazuh'),
             'pending' => __('Pending', 'wazuh'),
             'never_connected' => __('Never Connected', 'wazuh')
-                ], ['value' => $this->fields['status'], 'display' => false]);
+                ], ['value' => $this->fields['status'] ?? '', 'display' => false]);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('Version', 'wazuh') . "</td>";
         echo "<td>";
-        echo Html::input('version', ['value' => $this->fields['version'], 'class' => 'form-control']);
+        echo Html::input('version', ['value' => $this->fields['version'] ?? '', 'class' => 'form-control']);
         echo "</td>";
         echo "<td>" . __('Last Keep Alive', 'wazuh') . "</td>";
         echo "<td>";
-        Html::showDateTimeField('last_keepalive', ['value' => $this->fields['last_keepalive']]);
+        Html::showDateTimeField('last_keepalive', ['value' => $this->fields['last_keepalive'] ?? '']);
         echo "</td>";
         echo "</tr>";
 
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __('OS Name', 'wazuh') . "</td>";
         echo "<td>";
-        echo Html::input('os_name', ['value' => $this->fields['os_name'], 'class' => 'form-control']);
+        echo Html::input('os_name', ['value' => $this->fields['os_name'] ?? '', 'class' => 'form-control']);
         echo "</td>";
         echo "<td>" . __('OS Version', 'wazuh') . "</td>";
         echo "<td>";
-        echo Html::input('os_version', ['value' => $this->fields['os_version'], 'class' => 'form-control']);
+        echo Html::input('os_version', ['value' => $this->fields['os_version'] ?? '', 'class' => 'form-control']);
         echo "</td>";
         echo "</tr>";
 
@@ -814,7 +814,7 @@ class PluginWazuhAgent extends CommonDBTM {
         echo "<td colspan='3'>";
         echo Html::textarea([
             'name' => 'groups',
-            'value' => $this->fields['groups'],
+            'value' => $this->fields['groups'] ?? '',
             'cols' => 100,
             'rows' => 3
         ]);
@@ -825,10 +825,10 @@ class PluginWazuhAgent extends CommonDBTM {
         echo "<td>" . __('Device') . "</td>";
         echo "<td>";
 
-        $elements = $this->collectDevices($this->fields['entities_id']);
+        $elements = $this->collectDevices($this->fields['entities_id'] ?? '');
 
         Dropdown::showFromArray('itemtype_item_id', $elements, [
-            'value' => (!empty($this->fields['item_id'])) ? $this->fields['itemtype'] . '___' . $this->fields['item_id'] : 0,
+            'value' => (!empty($this->fields['item_id'] ?? '')) ? $this->fields['itemtype'] ?? '' . '___' . $this->fields['item_id'] ?? '' : 0,
             'rand' => mt_rand(),
             'width' => '100%'
         ]);

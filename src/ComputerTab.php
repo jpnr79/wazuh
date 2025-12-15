@@ -218,16 +218,16 @@ class ComputerTab extends DeviceTab implements Ticketable {
 
     public static function getAgentVulnerabilities(CommonGLPI $device): array | false {
         if ($device instanceof Computer) {
-            $agent = PluginWazuhAgent::getByDeviceTypeAndId($device->getType(), $device->fields['id']);
+            $agent = PluginWazuhAgent::getByDeviceTypeAndId($device->getType(), $device->fields['id'] ?? '');
             if ($agent) {
                 $connection = Connection::getById($agent->fields[Connection::getForeignKeyField()]);
                 if ($connection) {
-                    static::initWazuhConnection($connection->fields['indexer_url'], $connection->fields['indexer_port'], $connection->fields['indexer_user'], $connection->fields['indexer_password']);
-                    $agentId = $agent->fields['agent_id'];
+                    static::initWazuhConnection($connection->fields['indexer_url'] ?? '', $connection->fields['indexer_port'] ?? '', $connection->fields['indexer_user'] ?? '', $connection->fields['indexer_password'] ?? '');
+                    $agentId = $agent->fields['agent_id'] ?? '';
                     return static::queryVulnerabilitiesByAgentIds([$agentId], $device);
                 }
             } else {
-                $message = sprintf("%s %s Can not find active and not deleted agent id = %s type = %s", __CLASS__, __FUNCTION__, $device->fields['id'], $device->getType());
+                $message = sprintf("%s %s Can not find active and not deleted agent id = %s type = %s", __CLASS__, __FUNCTION__, $device->fields['id'] ?? '', $device->getType());
                 Logger::addError($message);
             }
         } else {
@@ -492,7 +492,7 @@ class ComputerTab extends DeviceTab implements Ticketable {
 
     static function generateLinkName(NetworkEqAlertsTab|NetworkEqTab|ComputerAlertsTab|ComputerTab $item): string
     {
-        return  $item->fields['name'] . "/" . $item->fields['p_name'];
+        return  $item->fields['name'] ?? '' . "/" . $item->fields['p_name'] ?? '';
     }
 
     static function getDeviceForeignKeyField(): string

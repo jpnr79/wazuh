@@ -124,7 +124,7 @@ function getOldVersion(): string | false {
     $plugin = new \Plugin();
     
     if ($plugin->getFromDBbyDir(PluginConfig::APP_CODE)) {
-        return $plugin->fields['version'];
+        return $plugin->fields['version'] ?? '';
     }
     return false;
 }
