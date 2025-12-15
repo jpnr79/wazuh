@@ -217,16 +217,16 @@ class NetworkEqTab extends DeviceTab implements Ticketable {
 
     public static function getAgentVulnerabilities(CommonGLPI $device): array | false {
         if ($device instanceof NetworkEquipment) {
-            $agent = PluginWazuhAgent::getByDeviceTypeAndId($device->getType(), $device->fields['id'] ?? '');
+            $agent = PluginWazuhAgent::getByDeviceTypeAndId($device->getType(), ($device->fields['id'] ?? ''));
             if ($agent) {
                 $connection = Connection::getById($agent->fields[Connection::getForeignKeyField()]);
                 if ($connection) {
-                    static::initWazuhConnection($connection->fields['indexer_url'] ?? '', $connection->fields['indexer_port'] ?? '', $connection->fields['indexer_user'] ?? '', $connection->fields['indexer_password'] ?? '');
-                    $agentId = $agent->fields['agent_id'] ?? '';
+                    static::initWazuhConnection(($connection->fields['indexer_url'] ?? ''), ($connection->fields['indexer_port'] ?? ''), ($connection->fields['indexer_user'] ?? ''), ($connection->fields['indexer_password'] ?? ''));
+                    $agentId = ($agent->fields['agent_id'] ?? '');
                     static::queryVulnerabilitiesByAgentIds([$agentId], $device);
                 }
             } else {
-                $message = sprintf("%s %s Can not find active and not deleted agent id = %s type = %s", __CLASS__, __FUNCTION__, $device->fields['id'] ?? '', $device->getType());
+                $message = sprintf("%s %s Can not find active and not deleted agent id = %s type = %s", __CLASS__, __FUNCTION__, ($device->fields['id'] ?? ''), $device->getType());
                 Logger::addError($message);
             }
         } else {
@@ -389,7 +389,7 @@ class NetworkEqTab extends DeviceTab implements Ticketable {
             $device = new \NetworkEquipment();
             if ($device->getFromDB($device_id)) {
                 Logger::addDebug(__FUNCTION__ . " Network Eq: $device_id");
-                $device_name = $cve->fields['name'] ?? '' . "/" . $cve->fields['p_name'] ?? '';
+                $device_name = ($cve->fields['name'] ?? '') . "/" . ($cve->fields['p_name'] ?? '');
                 $content = $comment  . "<br>";
                 $content .= sprintf(
                         __('Linked Network Device: %s', PluginConfig::APP_CODE) . "<br>",
@@ -399,7 +399,7 @@ class NetworkEqTab extends DeviceTab implements Ticketable {
                 foreach ($cves as $cveid) {
                     $cve = self::getById($cveid);
                     array_push($full_cves, $cve);
-                    $name = $cve->fields['name'] ?? '';
+                    $name = ($cve->fields['name'] ?? '');
                     $content .= sprintf(
                             " <a href='../plugins/wazuh/front/networkeqtab.form.php?id=$cveid'>$name</a> "
                     );
@@ -586,7 +586,7 @@ class NetworkEqTab extends DeviceTab implements Ticketable {
 
     static function generateLinkName(NetworkEqAlertsTab|NetworkEqTab|ComputerAlertsTab|ComputerTab $item): string
     {
-        return  $item->fields['name'] ?? '' . "/" . $item->fields['p_name'] ?? '';
+        return  ($item->fields['name'] ?? '') . "/" . ($item->fields['p_name'] ?? '');
     }
 
     static function getDeviceForeignKeyField(): string

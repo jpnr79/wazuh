@@ -40,7 +40,7 @@ trait TicketableTrait {
 
         $device = static::newDeviceInstance();
         if ($device->getFromDB($device_id)) {
-            $device_name = $device->fields['name'] ?? '';
+            $device_name = ($device->fields['name'] ?? '');
             $content = $comment . "<br>";
             $device_href = static::getDeviceHref($device_id);
             $content .= sprintf(

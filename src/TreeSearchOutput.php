@@ -121,7 +121,7 @@ class TreeSearchOutput extends \CommonDBTM {
         if (isset($_SESSION['glpi_loaded_savedsearch'])) {
             $savedsearch = new SavedSearch();
             $savedsearch->getFromDB($_SESSION['glpi_loaded_savedsearch']);
-            if ($itemtype === $savedsearch->fields['itemtype'] ?? '') {
+            if ($itemtype === ($savedsearch->fields['itemtype'] ?? '')) {
                 $active_search_name = $savedsearch->getName();
                 $active_savedsearch = true;
             }

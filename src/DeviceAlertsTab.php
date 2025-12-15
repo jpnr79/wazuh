@@ -309,9 +309,9 @@ abstract class DeviceAlertsTab extends CommonTreeDropdown implements Upgradeable
         $twig->display('@wazuh/device_alerts_tab.html.twig', [
             'item' => $this,
             'params' => $options,
-            'syscheck_content' => $this->sanitizeOutput($this->formatJsonToHtml($this->fields['syscheck'] ?? '')),
-            'data_content' => $this->sanitizeOutput($this->formatJsonToHtml($this->fields['data'] ?? '')),
-            'rule_content' => $this->sanitizeOutput($this->formatJsonToHtml($this->fields['rule'] ?? '')),
+            'syscheck_content' => $this->sanitizeOutput($this->formatJsonToHtml(($this->fields['syscheck'] ?? ''))),
+            'data_content' => $this->sanitizeOutput($this->formatJsonToHtml(($this->fields['data'] ?? ''))),
+            'rule_content' => $this->sanitizeOutput($this->formatJsonToHtml(($this->fields['rule'] ?? ''))),
         ]);
         return true;
     }
