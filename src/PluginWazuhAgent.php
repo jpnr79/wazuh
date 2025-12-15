@@ -65,15 +65,15 @@ class PluginWazuhAgent extends CommonDBTM {
         $menu = [];
         if (\Config::canUpdate()) {
             $menu["title"] = self::getMenuName();
-            $menu["page"] = "/" . \Plugin::getWebDir(PluginConfig::APP_CODE, false) . "/front/pluginwazuhagent.php";
+            $menu["page"] = "/plugins/" . PluginConfig::APP_CODE . "/front/pluginwazuhagent.php";
             $menu["icon"] = self::getIcon();
             
         $menu['options']['tools']['title'] = self::getMenuName() . '2';
-        $menu['options']['tools']['page'] = "/" . \Plugin::getWebDir(PluginConfig::APP_CODE, false) . "/front/pluginwazuhagent.php";
+        $menu['options']['tools']['page'] = "/plugins/" . PluginConfig::APP_CODE . "/front/pluginwazuhagent.php";
         $menu['options']['tools']['icon'] = self::getIcon();
 
         $menu['tools']['title'] = self::getMenuName() . '3';
-        $menu['tools']['page'] = "/" . \Plugin::getWebDir(PluginConfig::APP_CODE, false) . "/front/pluginwazuhagent.php";
+        $menu['tools']['page'] = "/plugins/" . PluginConfig::APP_CODE . "/front/pluginwazuhagent.php";
         $menu['tools']['icon'] = self::getIcon();
 
         }
