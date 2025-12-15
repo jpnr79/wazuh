@@ -76,12 +76,12 @@ class Connection extends \CommonDropdown implements Upgradeable {
         $menu = [];
         if (\Config::canUpdate()) {
             $menu["title"] = self::getMenuName();
-            $menu["page"] = "/" . \Plugin::getWebDir(PluginConfig::APP_CODE, false) . "/front/connection.php";
+            $menu["page"] = "/plugins/" . PluginConfig::APP_CODE . "/front/connection.php";
             $menu["icon"] = self::getIcon();
         }
         
         $menu['options']['config']['title'] = 'Connection3';
-        $menu['options']['config']['page'] = "/" . \Plugin::getWebDir(PluginConfig::APP_CODE, false) . "/front/connection.php";
+        $menu['options']['config']['page'] = "/plugins/" . PluginConfig::APP_CODE . "/front/connection.php";
         $menu['options']['config']['icon'] = 'fas fa-cog';
 
         if (count($menu)) {
