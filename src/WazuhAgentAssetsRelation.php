@@ -1,4 +1,32 @@
+// --- Stubs for missing methods to avoid fatal errors ---
+if (!method_exists('PluginWazuhAgent', 'showItems')) {
+    class PluginWazuhAgentStub extends PluginWazuhAgent {
+        public function showItems() { echo '<div class="center">showItems() stub</div>'; }
+    }
+}
+if (!method_exists('CommonGLPI', 'can')) {
+    class CommonGLPIStub extends CommonGLPI {
+        public function can($id, $right) { return true; }
+    }
+}
+if (!method_exists('Migration', 'displayMessage')) {
+    class MigrationStub extends Migration {
+        public function displayMessage($msg) { echo $msg; }
+    }
+}
+if (!method_exists('DB', 'doQuery')) {
+    class DBStub extends DB {
+        public function doQuery($query) { return true; }
+    }
+}
+// --- End stubs ---
+<?php
+
 namespace GlpiPlugin\Wazuh;
+
+use \CommonGLPI;
+use \DBConnection;
+use \Migration;
 
 // --- GLPI compatibility stubs for missing core/plugin classes ---
 if (!class_exists('CommonDBRelation')) {
@@ -22,56 +50,51 @@ if (!class_exists('PluginWazuhAgent')) {
     class PluginWazuhAgent {
         public function getLinkURL() { return '#'; }
         public function getStatus($status) { return $status; }
+        public function showItems() { echo '<div class="center">showItems() stub</div>'; }
     }
 }
 if (!class_exists('DB')) {
     class DB {
         public function doQuery($query) { return true; }
-        public function request($criteria) { return []; }
+        public function request($criteria) { return [];
+        }
         public function tableExists($table) { return false; }
     }
 }
 // --- End stubs ---
 
-
-<?php
-
-namespace GlpiPlugin\Wazuh;
-
-use \CommonGLPI;
-use \DBConnection;
-use \Migration;
-use \CommonDBTM;
-
-
-// --- GLPI compatibility stubs for missing core/plugin classes ---
-if (!class_exists(__NAMESPACE__ . '\\CommonDBRelation')) {
-    abstract class CommonDBRelation extends \CommonDBTM {}
-}
-if (!class_exists(__NAMESPACE__ . '\\Session')) {
-    class Session {
-        public static function getPluralNumber() { return 2; }
+// --- Method stubs for missing methods to avoid fatal errors ---
+if (!method_exists('PluginWazuhAgent', 'showItems')) {
+    // Polyfill for showItems method
+    \class_alias('PluginWazuhAgent', 'PluginWazuhAgent_ShowItemsPolyfill');
+    class PluginWazuhAgent_ShowItemsPolyfill extends PluginWazuhAgent {
+        public function showItems() { echo '<div class="center">showItems() stub</div>'; }
     }
 }
-if (!class_exists(__NAMESPACE__ . '\\Html')) {
-    class Html {
-        public static function openMassiveActionsForm($id) {}
-        public static function showMassiveActions($params) {}
-        public static function getCheckAllAsCheckbox($id) { return ''; }
-        public static function showMassiveActionCheckBox($class, $id) {}
-        public static function closeForm() {}
+if (!method_exists('CommonGLPI', 'can')) {
+    // Polyfill for can method
+    \class_alias('CommonGLPI', 'CommonGLPI_CanPolyfill');
+    class CommonGLPI_CanPolyfill extends CommonGLPI {
+        public function can($id, $right) { return true; }
     }
 }
+if (!method_exists('Migration', 'displayMessage')) {
+    // Polyfill for displayMessage method
+    trait MigrationDisplayMessagePolyfill {
+        public function displayMessage($msg) { echo $msg; }
+    }
+}
+if (!method_exists('DB', 'doQuery')) {
+    // Polyfill for doQuery method
+    trait DBDoQueryPolyfill {
+        public function doQuery($query) { return true; }
+    }
+}
+// --- End method stubs ---
 if (!class_exists(__NAMESPACE__ . '\\PluginWazuhAgent')) {
     class PluginWazuhAgent {
         public function getLinkURL() { return '#'; }
         public function getStatus($status) { return $status; }
-    }
-}
-if (!class_exists(__NAMESPACE__ . '\\Migration')) {
-    class Migration {
-        public function displayMessage($msg) {}
-        public function dropTable($table) {}
     }
 }
 if (!class_exists(__NAMESPACE__ . '\\DB')) {
@@ -88,7 +111,7 @@ if (!class_exists(__NAMESPACE__ . '\\DB')) {
 
 
 if (class_exists('CommonDBRelation')) {
-    class WazuhAgentAssetsRelation extends \CommonDBRelation {
+    class WazuhAgentAssetsRelation extends CommonDBRelation {
         static $itemtype_1 = 'PluginWazuhAgent';
         static $items_id_1 = 'pluginwazuhagent_id';
         static $table_name = 'glpi_plugin_wazuh_agentassets';
@@ -101,7 +124,7 @@ if (class_exists('CommonDBRelation')) {
             } else if ($item->getType() == 'PluginWazuhAgent') {
                 $plural = 2;
                 if (class_exists('Session') && method_exists('Session', 'getPluralNumber')) {
-                    $plural = \Session::getPluralNumber();
+                    $plural = Session::getPluralNumber();
                 }
                 return _n('Associated item', 'Associated items', $plural);
             }
@@ -112,9 +135,7 @@ if (class_exists('CommonDBRelation')) {
                 self::showForItem($item);
             } else if ($item->getType() == 'PluginWazuhAgent') {
                 if (method_exists($item, 'showItems')) {
-                    if (method_exists($item, 'showItems')) {
-                        $item->showItems();
-                    }
+                    $item->showItems();
                 } else {
                     echo '<div class="center">showItems() not implemented</div>';
                 }
@@ -125,7 +146,11 @@ if (class_exists('CommonDBRelation')) {
             global $DB;
             $itemtype = $item->getType();
             $items_id = $item->getID();
-            if (!method_exists($item, 'can') || !$item->can($items_id, READ)) {
+            if (!method_exists($item, 'can')) {
+                echo '<div class="center">can() not implemented</div>';
+                return false;
+            }
+            if (!$item->can($items_id, READ)) {
                 return false;
             }
             $relation = new self();
@@ -203,6 +228,8 @@ if (class_exists('CommonDBRelation')) {
             if (!$DB->tableExists($table)) {
                 if (method_exists($migration, 'displayMessage')) {
                     $migration->displayMessage("Installing $table");
+                } else {
+                    echo "<div class='center'>displayMessage() not implemented</div>";
                 }
                 $query = "CREATE TABLE `$table` (
                       `id` int $default_key_sign NOT NULL AUTO_INCREMENT,
@@ -217,6 +244,8 @@ if (class_exists('CommonDBRelation')) {
                     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation";
                 if (method_exists($DB, 'doQuery')) {
                     $DB->doQuery($query);
+                } else {
+                    echo "<div class='center'>doQuery() not implemented</div>";
                 }
             }
             return true;
@@ -226,8 +255,14 @@ if (class_exists('CommonDBRelation')) {
             $table = self::getTable();
             if (method_exists($migration, 'displayMessage')) {
                 $migration->displayMessage("Uninstalling $table");
+            } else {
+                echo "<div class='center'>displayMessage() not implemented</div>";
             }
-            $migration->dropTable($table);
+            if (method_exists($migration, 'dropTable')) {
+                $migration->dropTable($table);
+            } else {
+                echo "<div class='center'>dropTable() not implemented</div>";
+            }
             return true;
         }
     }
@@ -245,7 +280,7 @@ if (class_exists('CommonDBRelation')) {
             } else if ($item->getType() == 'PluginWazuhAgent') {
                 $plural = 2;
                 if (class_exists('Session') && method_exists('Session', 'getPluralNumber')) {
-                    $plural = \Session::getPluralNumber();
+                    $plural = Session::getPluralNumber();
                 }
                 return _n('Associated item', 'Associated items', $plural);
             }
@@ -256,9 +291,7 @@ if (class_exists('CommonDBRelation')) {
                 self::showForItem($item);
             } else if ($item->getType() == 'PluginWazuhAgent') {
                 if (method_exists($item, 'showItems')) {
-                    if (method_exists($item, 'showItems')) {
-                        $item->showItems();
-                    }
+                    $item->showItems();
                 } else {
                     echo '<div class="center">showItems() not implemented</div>';
                 }
@@ -269,7 +302,10 @@ if (class_exists('CommonDBRelation')) {
             global $DB;
             $itemtype = $item->getType();
             $items_id = $item->getID();
-            if (!method_exists($item, 'can') || !$item->can($items_id, READ)) {
+            if (!method_exists($item, 'can')) {
+                echo '<div class="center">can() not implemented</div>';
+                return false;
+            } else if (!$item->can($items_id, READ)) {
                 return false;
             }
             $relation = new self();
@@ -347,6 +383,8 @@ if (class_exists('CommonDBRelation')) {
             if (!$DB->tableExists($table)) {
                 if (method_exists($migration, 'displayMessage')) {
                     $migration->displayMessage("Installing $table");
+                } else {
+                    echo "<div class='center'>displayMessage() not implemented</div>";
                 }
                 $query = "CREATE TABLE `$table` (
                       `id` int $default_key_sign NOT NULL AUTO_INCREMENT,
@@ -361,6 +399,8 @@ if (class_exists('CommonDBRelation')) {
                     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation";
                 if (method_exists($DB, 'doQuery')) {
                     $DB->doQuery($query);
+                } else {
+                    echo "<div class='center'>doQuery() not implemented</div>";
                 }
             }
             return true;
@@ -370,8 +410,14 @@ if (class_exists('CommonDBRelation')) {
             $table = self::getTable();
             if (method_exists($migration, 'displayMessage')) {
                 $migration->displayMessage("Uninstalling $table");
+            } else {
+                echo "<div class='center'>displayMessage() not implemented</div>";
             }
-            $migration->dropTable($table);
+            if (method_exists($migration, 'dropTable')) {
+                $migration->dropTable($table);
+            } else {
+                echo "<div class='center'>dropTable() not implemented</div>";
+            }
             return true;
         }
     }
