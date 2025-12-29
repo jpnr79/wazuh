@@ -114,12 +114,9 @@ if (class_exists('CommonDBRelation')) {
                 self::showForItem($item);
             } else if ($item->getType() == 'PluginWazuhAgent') {
                 if (method_exists($item, 'showItems')) {
-                    if (method_exists($item, 'showItems')) {
-                        $item->showItems();
-                    } else {
-                        $stub = new \PluginWazuhAgentStub();
-                        $stub->showItems();
-                    }
+                    /** @var \PluginWazuhAgentStub|object $safeItem */
+                    $safeItem = method_exists($item, 'showItems') ? $item : new \PluginWazuhAgentStub();
+                    $safeItem->showItems();
                 } else {
                     $item = new \PluginWazuhAgentStub();
                     $item->showItems();
@@ -132,15 +129,10 @@ if (class_exists('CommonDBRelation')) {
             $itemtype = $item->getType();
             $items_id = $item->getID();
                 if (method_exists($item, 'can')) {
-                    if (method_exists($item, 'can')) {
-                        if (!$item->can($items_id, READ)) {
-                            return false;
-                        }
-                    } else {
-                        $stub = new \CommonGLPIStub();
-                        if (!$stub->can($items_id, READ)) {
-                            return false;
-                        }
+                    /** @var \CommonGLPIStub|object $safeItem */
+                    $safeItem = method_exists($item, 'can') ? $item : new \CommonGLPIStub();
+                    if (!$safeItem->can($items_id, READ)) {
+                        return false;
                     }
                 } else {
                     echo '<div class="center">can() method not found on $item</div>';
@@ -220,12 +212,9 @@ if (class_exists('CommonDBRelation')) {
             $table = self::$table_name;
             if (!$DB->tableExists($table)) {
                 if (method_exists($migration, 'displayMessage')) {
-                    if (method_exists($migration, 'displayMessage')) {
-                        $migration->displayMessage("Installing $table");
-                    } else {
-                        $stub = new \MigrationStub();
-                        $stub->displayMessage("Installing $table");
-                    }
+                    /** @var \MigrationStub|object $safeMigration */
+                    $safeMigration = method_exists($migration, 'displayMessage') ? $migration : new \MigrationStub();
+                    $safeMigration->displayMessage("Installing $table");
                 } else {
                     echo "<div class='center'>displayMessage() not implemented</div>";
                 }
@@ -241,12 +230,9 @@ if (class_exists('CommonDBRelation')) {
                       KEY `item` (`itemtype`,`items_id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation";
                     if (method_exists($DB, 'doQuery')) {
-                        if (method_exists($DB, 'doQuery')) {
-                            $DB->doQuery($query);
-                        } else {
-                            $stub = new \DBStub();
-                            $stub->doQuery($query);
-                        }
+                        /** @var \DBStub|object $safeDB */
+                        $safeDB = method_exists($DB, 'doQuery') ? $DB : new \DBStub();
+                        $safeDB->doQuery($query);
                     } else {
                         echo '<div class="center">doQuery() method not found on $DB</div>';
                     }
@@ -257,12 +243,9 @@ if (class_exists('CommonDBRelation')) {
             global $DB;
             $table = self::getTable();
             if (method_exists($migration, 'displayMessage')) {
-                if (method_exists($migration, 'displayMessage')) {
-                    $migration->displayMessage("Uninstalling $table");
-                } else {
-                    $stub = new \MigrationStub();
-                    $stub->displayMessage("Uninstalling $table");
-                }
+                /** @var \MigrationStub|object $safeMigration */
+                $safeMigration = method_exists($migration, 'displayMessage') ? $migration : new \MigrationStub();
+                $safeMigration->displayMessage("Uninstalling $table");
             } else {
                 echo "<div class='center'>displayMessage() not implemented</div>";
             }
@@ -299,12 +282,9 @@ if (class_exists('CommonDBRelation')) {
                 self::showForItem($item);
             } else if ($item->getType() == 'PluginWazuhAgent') {
                 if (method_exists($item, 'showItems')) {
-                    if (method_exists($item, 'showItems')) {
-                        $item->showItems();
-                    } else {
-                        $stub = new \PluginWazuhAgentStub();
-                        $stub->showItems();
-                    }
+                    /** @var \PluginWazuhAgentStub|object $safeItem */
+                    $safeItem = method_exists($item, 'showItems') ? $item : new \PluginWazuhAgentStub();
+                    $safeItem->showItems();
                 } else {
                     echo '<div class="center">showItems() not implemented</div>';
                 }
@@ -316,15 +296,10 @@ if (class_exists('CommonDBRelation')) {
             $itemtype = $item->getType();
             $items_id = $item->getID();
             if (method_exists($item, 'can')) {
-                if (method_exists($item, 'can')) {
-                    if (!$item->can($items_id, READ)) {
-                        return false;
-                    }
-                } else {
-                    $stub = new \CommonGLPIStub();
-                    if (!$stub->can($items_id, READ)) {
-                        return false;
-                    }
+                /** @var \CommonGLPIStub|object $safeItem */
+                $safeItem = method_exists($item, 'can') ? $item : new \CommonGLPIStub();
+                if (!$safeItem->can($items_id, READ)) {
+                    return false;
                 }
             } else {
                 $item = new \CommonGLPIStub();
@@ -411,12 +386,9 @@ if (class_exists('CommonDBRelation')) {
             $table = self::$table_name;
             if (!$DB->tableExists($table)) {
                 if (method_exists($migration, 'displayMessage')) {
-                    if (method_exists($migration, 'displayMessage')) {
-                        $migration->displayMessage("Installing $table");
-                    } else {
-                        $stub = new \MigrationStub();
-                        $stub->displayMessage("Installing $table");
-                    }
+                    /** @var \MigrationStub|object $safeMigration */
+                    $safeMigration = method_exists($migration, 'displayMessage') ? $migration : new \MigrationStub();
+                    $safeMigration->displayMessage("Installing $table");
                 } else {
                     $migration = new \MigrationStub();
                     $migration->displayMessage("Installing $table");
@@ -433,12 +405,9 @@ if (class_exists('CommonDBRelation')) {
                       KEY `item` (`itemtype`,`items_id`)
                     ) ENGINE=InnoDB DEFAULT CHARSET=$default_charset COLLATE=$default_collation";
                 if (method_exists($DB, 'doQuery')) {
-                    if (method_exists($DB, 'doQuery')) {
-                        $DB->doQuery($query);
-                    } else {
-                        $stub = new \DBStub();
-                        $stub->doQuery($query);
-                    }
+                    /** @var \DBStub|object $safeDB */
+                    $safeDB = method_exists($DB, 'doQuery') ? $DB : new \DBStub();
+                    $safeDB->doQuery($query);
                 } else {
                     $DB = new \DBStub();
                     $DB->doQuery($query);
@@ -450,12 +419,9 @@ if (class_exists('CommonDBRelation')) {
             global $DB;
             $table = self::getTable();
             if (method_exists($migration, 'displayMessage')) {
-                if (method_exists($migration, 'displayMessage')) {
-                    $migration->displayMessage("Uninstalling $table");
-                } else {
-                    $stub = new \MigrationStub();
-                    $stub->displayMessage("Uninstalling $table");
-                }
+                /** @var \MigrationStub|object $safeMigration */
+                $safeMigration = method_exists($migration, 'displayMessage') ? $migration : new \MigrationStub();
+                $safeMigration->displayMessage("Uninstalling $table");
             } else {
                 $migration = new \MigrationStub();
                 $migration->displayMessage("Uninstalling $table");
